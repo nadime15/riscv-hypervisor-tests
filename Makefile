@@ -32,7 +32,7 @@ build-riscv-hext-asm-tests:
 	&& ./run_tests.py --build
 run-riscv-hext-asm-tests:
 	cd riscv-hext-asm-tests \
-	&& ./run_tests.py --run
+	&& ./run_tests.py --run --sail-path $(SAIL)
 clean-riscv-hext-asm-tests:
 	cd riscv-hext-asm-tests \
 	&& ./run_tests.py --clean

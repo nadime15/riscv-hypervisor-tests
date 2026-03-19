@@ -1,13 +1,17 @@
 export PATH := $(RISCV)/bin:$(PATH)
+CROSS_COMPILE=riscv64-unknown-elf-
+SAIL?=./build/c_emulator/sail_riscv_sim
+MARCH=rv64imafdch_zicntr_zihpm_sscofpmf
 
 .PHONY: riscv-hs-tests riscv-hyp-tests riscv-hext-asm-tests
 
 build-riscv-hs-tests:
 	cd riscv-hs-tests \
-	&& make all
+	&& make all CROSS_COMPILE=$(CROSS_COMPILE) PATH=$(RISCV)/bin:$(PATH)
 run-riscv-hs-tests:
 	cd riscv-hs-tests \
-	&& sail_riscv_sim --config ../rv64d_v128_e64.json ./build/riscv-hs-tests.elf --trace-all --trace-output ./log/sail_trace.log
+	&& $(SAIL) ./build/riscv-hs-tests.elf
+##	&& spike --isa=$(MARCH) ./build/riscv-hs-tests.elf
 clean-riscv-hs-tests:
 	cd riscv-hs-tests \
 	&& make clean
@@ -17,7 +21,8 @@ build-riscv-hyp-tests:
 	&& PLAT=sail LOG_LEVEL=LOG_INFO make
 run-riscv-hyp-tests:
 	cd riscv-hyp-tests \
-	&& sail_riscv_sim --config ../rv64d_v128_e64.json ./build/sail/rvh_test.elf --trace-all --trace-output ./log/sail_trace.log
+	&& $(SAIL) ./build/sail/rvh_test.elf
+#	&& spike --isa=rv64imafdch_zicntr_zihpm_sscofpmf ./build/sail/rvh_test.elf
 clean-riscv-hyp-tests:
 	cd riscv-hyp-tests \
 	&& PLAT=sail make clean
